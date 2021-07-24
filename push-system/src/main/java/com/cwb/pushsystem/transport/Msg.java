@@ -265,7 +265,7 @@ public class Msg {
     public String asStringLightweight() {
         long curr = System.nanoTime();
         String splitStr1 = String.format("%020d", curr);
-        String splitStr2 = String.format("%020d", curr+1);
+        String splitStr2 = String.format("%020d", curr + 1);
         String head = this.head.asStringLightweight(splitStr2);
         String body = this.body.asStringLightweight(splitStr2);
         String tail = this.tail.asStringLightweight(splitStr2);
@@ -280,11 +280,32 @@ public class Msg {
         return stringBuilder.toString();
     }
 
-    public static Msg emptyMsg(long a) {
+    public static Msg emptyMsg() {
         return Msg.builder()
-                .head(MsgHead.builder().type(MsgType.DEFAULT).createdTime(System.currentTimeMillis()).receiver(a).build())
-                .body(MsgBody.builder().build())
-                .tail(MsgTail.builder().build())
+                .head(MsgHead.builder()
+                        .id("no-id")
+                        .size(0)
+                        .type(MsgType.DEFAULT)
+                        .createdTime(System.currentTimeMillis())
+                        .arriveTime(System.currentTimeMillis())
+                        .sender(-1L)
+                        .receiver(-1L)
+                        .build())
+                .body(MsgBody.builder()
+                        .body("empty")
+                        .build())
+                .tail(MsgTail.builder()
+                        .placeholder(0)
+                        .build())
                 .build();
+    }
+
+    public static Msg initMsg(long sender) {
+        Msg msg = emptyMsg();
+        msg.getHead().setId(sender + "-0");
+        msg.getHead().setType(MsgType.INIT);
+        msg.getHead().setSender(sender);
+        msg.getBody().setBody("init");
+        return msg;
     }
 }

@@ -18,7 +18,7 @@ import java.util.concurrent.locks.LockSupport;
  * <br/>
  * 推送系统本身不做消息处理，仅负责推送，也就是仅存在第一次连接，客户端发送必要初始化信息初始化连接Channel之后；只能由服务端去推送消息给客户端。
  * <br/>
- * 出了初始连接，客户端只能被动的接收消息。
+ * 除了初始连接，客户端只能被动的接收消息。
  */
 public class Server {
 
@@ -36,15 +36,14 @@ public class Server {
         DisposableServer bindNow = server.bindNow();
         LockSupport.parkNanos(Duration.ofMillis(100).toNanos());
         new Thread(() -> {
-            Client.main(new String[]{"3"});
+            Client.main(new String[]{"1"});
         }).start();
         new Thread(() -> {
-            Client.main(new String[]{"4"});
+            Client.main(new String[]{"2"});
         }).start();
         LockSupport.parkNanos(Duration.ofMillis(300).toNanos());
-        handler.writeAsync(3L, Msg.emptyMsg(3L));
-        handler.writeAsync(4L, Msg.emptyMsg(4L));
-        handler.writeAsync(4L, Msg.emptyMsg(4L));
+        handler.writeAsync(Msg.initMsg(0L));
+        handler.writeAsync(Msg.initMsg(99L));
         bindNow.onDispose().block();
     }
 }

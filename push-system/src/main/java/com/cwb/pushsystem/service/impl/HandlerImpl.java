@@ -78,7 +78,7 @@ public class HandlerImpl implements Handler {
                         });
                     }
                 });
-        // 这个方法会在每个连接建立之前被调用，然后设置触发链，其中NettyOutbound会被链接到写事件上，此时整个Server还没有开始接受连接。
+        // 这个方法会在每个连接建立之后，第一次写之前被调用，然后设置触发链，其中NettyOutbound会被链接到写事件上，此时整个Server还没有开始接受连接。
         // 所以对于output传参sink的操作会早于可读事件的发生，因此不会为空。
         NettyOutbound outbound = out.sendString(output);
         return outbound;
